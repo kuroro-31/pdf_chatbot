@@ -3,15 +3,12 @@
 ## パッケージインストール
 使用するパッケージをインストールしてください。
 ```
-pip3 install streamlit 
-```
-```
-pip3 install streamlit_chat
-```
-```
-pip3 install langchain
+pip install python-dotenv
+pip install streamlit 
+pip install streamlit_chat
+pip install langchain
 ```
 ## 実行
 ```
-python3 app.py
+python app.py
 ```
