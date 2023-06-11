@@ -35,6 +35,7 @@ class PDFReader:
 class QAResponseGenerator:
     def __init__(self, selected_model, pdf_reader):
         self.llm_predictor = LLMPredictor(llm=OpenAI(
+            openai_api_key=os.getenv('OPENAI_API_KEY'),
             temperature=0, model_name=selected_model))
         self.pdf_reader = pdf_reader
         self.QA_PROMPT_TMPL = (
@@ -94,6 +95,10 @@ def display_chat(chat_history):
 
 
 def main():
+    # チャット履歴を保存
+    if "chat_history" not in st.session_state:
+        st.session_state["chat_history"] = []
+
     st.title('PDF Q&A app')
 
     upload_pdf_file()
@@ -107,15 +112,9 @@ def main():
     submit_question = st.button("質問")
     clear_chat = st.sidebar.button("履歴消去")
 
-    # チャット履歴を保存
-    if "chat_history" not in st.session_state:
-        st.session_state["chat_history"] = []
-
-    if clear_chat:
-        st.session_state["chat_history"] = []
-
     pdf_reader = PDFReader()
     response_generator = QAResponseGenerator(selected_model, pdf_reader)
+
     # ボタンがクリックされた場合の処理
     if submit_question:
         if question:  # 質問が入力されている場合
@@ -126,6 +125,9 @@ def main():
             # 質問と応答をチャット履歴に追加
             st.session_state["chat_history"].append({"user": question})
             st.session_state["chat_history"].append({"bot": response})
+
+    if clear_chat:
+        st.session_state["chat_history"] = []
 
     display_chat(st.session_state["chat_history"])
 
